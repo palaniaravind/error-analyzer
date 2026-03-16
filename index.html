@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Code Error Analyzer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #b3e7ee;
+            padding: 20px;
+        }
+             
+        h1 {
+            text-align: center;
+            font-size: 54px;
+            text-transform: uppercase;
+        }
+        textarea {
+            align-items: center;
+            width:100%;
+            height: 250px;
+            font-family: monospace;
+            font-size: 14px;
+            background-color: rgb(248, 250, 250);
+            border-radius: 7px;
+            
+            
+        }
+         button {
+            padding: 15px;
+            width: auto;
+            margin-top: 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 12px;
+                font-size: 12px;
+                text-transform: uppercase;
+                font-weight: 900;
+            
+        
+        }
+            button:hover {
+                background-color: #075c0a;
+                cursor: pointer;
+            }
+            button:active {
+                background-color: #075c0a;
+            }
+        
+        label{
+            font-weight: bold;
+            font-size:20px;
+
+        }
+        select {
+            padding: 10px;
+            margin-top: 20px;
+            background-color: #dce144;
+            border-radius: 12px;
+            font-size: 18px;
+               
+        }
+       
+        #output {
+            margin-top: 20px;
+            background: #fff;
+            padding: 5%;
+            border-left: 5px solid red;
+        }
+        div#suggestions ,div#output{
+            margin-top: 20px;
+            background: #fff;
+            padding: 5%;
+            border-left: 5px solid green;
+        }
+
+    </style>
+</head>
+<body>
+    
+<header>
+<h1><b>Error Analyzer</h1></b>
+<center><h5>Analyzes your code and helps you to find errors</h5>
+</header>
+<label>Select Programming Language:</label>
+
+<select>
+            <option value="JAVA">☕ Java (.java)</option>
+            <option value="PYTHON">🐍 Python (.py)</option>
+            <option value="JAVASCRIPT">⚡ JavaScript (.js)</option>
+            <option value="C">⚙️ C/C++ (.c, .cpp)</option>
+            <option value="HTML">🌐 HTML (.html)</option>
+</select>
+
+</center>
+<br><br>
+
+<label>Enter Code:</label>
+<div class="textarea">
+<textarea placeholder="Write your code here..."></textarea>
+
+<br>
+<center>
+<button onclick="analyze()" >Analyze Code</button>
+<button onclick="showHistory()" id="history">History</button>
+<button onclick="suggestions()" id="suggestions">Suggestions</button>
+<button onclick="logout()" id="logout">Logout</button>
+</center>
+
+<div id="output">
+    <strong>Error Output:</strong>
+    <p id="errorText">No errors found.</p>
+</div>
+<div id="suggestions">
+    <strong>Suggestions:</strong>
+    <ul id="suggestion">
+       <li>make sure all brackets are properly closed</li>
+    </ul>
+</div>
+
+
+<script>
+
+async function analyze() {
+
+    const language = document.querySelector("select").value;
+    const code = document.querySelector("textarea").value;
+
+    const response = await fetch("/analyze", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ language, code })
+    });
+
+    const data = await response.json();
+
+    document.getElementById("errorText").innerText = data.result;
+    document.getElementById("suggestion").innerHTML =
+        `<li>${data.suggestion}</li>`;
+}
+
+
+async function logout() {
+    await fetch("/logout");
+    window.location.href = "login.html";
+}
+
+
+
+
+async function showHistory() {
+
+    const response = await fetch("/history");
+    const data = await response.json();
+
+    if (data.message) {
+        alert(data.message);
+        return;
+    }
+
+    let historyText = "";
+
+    data.forEach(item => {
+        historyText += `Language: ${item.language}\nResult: ${item.result}\nDate: ${item.created_at}\n\n`;
+    });
+
+    alert(historyText);
+}
+
+function suggestions() {
+    document.getElementById("suggestion").innerHTML =
+        "<li>Check for missing semicolons at the end of statements.</li>" +
+        "<li>Ensure all brackets and parentheses are properly closed.</li>" +
+        "<li>Verify that variable names are spelled correctly.</li>" +
+        "<li>Use a linter to identify potential issues in your code.</li>";
+}
+</script>
+
+
+
+<hr>
+<center>
+<footer>&#169; - RTRP CSE-D 2ND YEAR</footer>
+</center>
+</body>
+</html>

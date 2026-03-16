@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>error analyzer</title>
+<style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background:rgb(136, 232, 235);
+        }
+.login-form{
+      height: auto;
+      width: auto;
+}
+#fieldset{
+    margin:0 auto;
+    width: fit-content;
+    border-radius:  12px;
+    background-color:rgb(136, 232, 235);
+}
+ p{
+    text-transform: uppercase;
+    font-size: 15px;
+    font-weight: 700;
+}
+input[type="submit"]{
+    width: 30%;
+    padding: 10px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #0a0909;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+input[type="submit"]:hover{
+    background-color:rgb(176, 224, 230);
+    color: black;
+    font-weight: bold;
+    border: 1px solid #0a0909;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+label{
+    font-size: 15px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+#fieldset{
+    margin:0  auto;
+    margin-top: 175px;
+    width: fit-content;
+    border-radius:  12px;
+    background-color:rgb(176, 224, 230);
+    font-size: larger;
+    text-align: center;
+}
+legend{
+    font-size: 20px;
+    text-transform: uppercase;
+    font-weight: 900;
+    text-align: center;
+}
+h1{
+    font-size: 50px;
+    text-transform: uppercase;
+    font-weight: 900;
+    text-align: center;
+margin-top: auto;
+color:white;
+}
+
+</style>
+  
+</head>
+<body>
+   <div id="header">
+       <h1>ERROR ANALYZER</h1>
+       
+     
+<fieldset id="fieldset" value="fieldset">
+   
+<legend><b>LOGIN/REGISTER</b></legend>
+<center>
+  
+<div id="loginForm" class="login-form" style="background-color:powderblue;">
+ 
+<form id="loginForm">
+    <label>Email:</label>
+    <input type="email" id="email" required><br><br>
+
+    <label>Password:</label>
+    <input type="password" id="password" required><br><br>
+
+    <input type="submit" value="Login">
+</form>
+<p>Don't have an account? <a href="#" onclick="showRegisterForm()">Register here</a></p>   
+<script>
+document.getElementById("loginForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
+
+    const email = document.getElementById("email").value;
+    const pass = document.getElementById("password").value;
+
+    const response = await fetch("/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, pass })
+    });
+
+    const data = await response.json();
+
+    if (data.message === "Login successful") {
+        window.location.href = "index.html";
+    } else {
+        alert(data.message);
+    }
+});
+</script>
+
+</div>
+<div id="registerForm" class="login-form" style="background-color:rgb(138, 236, 233); display:none;">
+   <form id="registerForm">
+    <label>Email:</label>
+    <input type="email" id="regemail" required><br><br>
+
+    <label>Username:</label>
+    <input type="text" id="username" required><br><br>
+
+    <label>Password:</label>
+    <input type="password" id="regpassword" required><br><br>
+
+    <input type="submit" value="Register">
+
+   <p>already have an account
+   <a href="#" onclick="showloginForm()" >  login  </a></p>
+
+ </form>
+  
+</div>
+
+</center>
+</fieldset>
+<script>
+document.getElementById("registerForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
+
+    const regemail = document.getElementById("regemail").value;
+    const username = document.getElementById("username").value;
+    const regpassword = document.getElementById("regpassword").value;
+
+    const response = await fetch("/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ regemail, username, regpassword })
+    });
+
+    const data = await response.json();
+    alert(data.message);
+});
+</script>
+</div>
+</body>
+</html>
